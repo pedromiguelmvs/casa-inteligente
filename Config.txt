@@ -1,0 +1,21 @@
+// Configuração pinos NOde MCU
+const uint8_t trig_pin = D0;// ultrassom pino trigger
+const uint8_t echo_pin = D1; // ultrassom pino echo
+const byte pino_microfone = D2; // microfone para ouvir palma
+int ledPin = D3; //led do lrd
+int ldrPin = A0; //LDR ligado na porta analogica
+
+int ldrValor = 0; //Valor lido do LDR
+const byte pino_led = D4;//led do microfone
+
+
+TEIN
+Anydesk: 631671722
+Senha: septo2021
+
+
+https://techtutorialsx.com/2016/07/17/esp8266-http-get-requests/
+
+
+rede ifal: SEPTO
+senha: septowork

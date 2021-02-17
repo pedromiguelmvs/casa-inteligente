@@ -1,0 +1,24 @@
+PROJETO CASA INTELIGENTE
+
+Hardware – 2a. Avaliação mensal
+
+Fazer a programação embarcada no NodeMcu Esp8266 para uma casa inteligente com as seguintes funcionalidades:
+
+1. Apagar um led externo na casa quando o dia clarear e acender quando escurecer. Usar um resistor ldr para saber quando é dia ou noite.
+https://portal.vidadesilicio.com.br/sensor-de-luz-com-ldr/
+
+2. Acender o led da piscina via web. Você deve programar o NodeMcu para conectar o wifi do Ifal e acessar o site retornando uma variável 1 (1 e 0). Servidor gratuito de php.
+Ex: site.com/LedPiscina.php retorna 1 ou 0
+
+<?Php
+echo 1;
+?>
+
+Exemplo de método GET https :
+https://www.dobitaobyte.com.br/como-fazer-https-get-com-esp8266/
+
+
+3. Ativar/desativar um alarme. Usar no alarme um buzzer e um ultrassom para verificar a presença de alguém. Veja os links abaixo:
+https://portal.vidadesilicio.com.br/hc-sr04-sensor-ultrassonico/
+
+https://portal.vidadesilicio.com.br/usando-o-buzzer-com-arduino-transdutor-piezo-eletrico/

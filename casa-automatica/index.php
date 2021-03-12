@@ -29,6 +29,20 @@
             <button class="button" type="submit" value=5 name="led_quarto">Ligar</button>
         </form>
     </div>    
+    <div>
+        <label class="label">LDR</label>
+        <form class="form-container" method="POST">        
+            <button class="button" type="submit" value=6 name="ldr">Desligar</button>
+            <button class="button" type="submit" value=7 name="ldr">Ligar</button>
+        </form>
+    </div> 
+    <div>
+        <label class="label">Alarme</label>
+        <form class="form-container" method="POST">        
+            <button class="button" type="submit" value=8 name="alarme">Desligar</button>
+            <button class="button" type="submit" value=9 name="alarme">Ligar</button>
+        </form>
+    </div> 
 </body>
 </html>
 
@@ -41,15 +55,15 @@
      * id 3-4: led do quarto     
      */
 
-    $username = "root";
-    $password = "";
+    $username = "id16184140_root";
+    $password = "a=U9n*mi>ND/iSJQS";
 
     if (isset($_POST["led_piscina"])) {
         $led = $_POST["led_piscina"];
         $id = 'led_piscina';
 
         try {
-            $pdo = new PDO('mysql:host=localhost;dbname=casa_automatica', $username, $password);
+            $pdo = new PDO('mysql:host=localhost;dbname=id16184140_casa_automatica', $username, $password);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
             $stmt = $pdo->prepare('UPDATE recursos SET recurso = :led_casa WHERE id = :id');
@@ -68,7 +82,7 @@
         $id = 'buzzer';
 
         try {
-            $pdo = new PDO('mysql:host=localhost;dbname=casa_automatica', $username, $password);
+            $pdo = new PDO('mysql:host=localhost;dbname=id16184140_casa_automatica', $username, $password);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
             $stmt = $pdo->prepare('UPDATE recursos SET recurso = :buzzer WHERE id = :id');
@@ -87,11 +101,49 @@
         $id = 'led_quarto';
 
         try {
-            $pdo = new PDO('mysql:host=localhost;dbname=casa_automatica', $username, $password);
+            $pdo = new PDO('mysql:host=localhost;dbname=id16184140_casa_automatica', $username, $password);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
             $stmt = $pdo->prepare('UPDATE recursos SET recurso = :led_quarto WHERE id = :id');
             $stmt->bindValue(":led_quarto", $led_quarto);
+            $stmt->bindValue(":id", $id);
+            $stmt->execute();
+        
+            echo $stmt->rowCount();
+        } catch(PDOException $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
+    if (isset($_POST["ldr"])) {
+        $ldr = $_POST["ldr"];
+        $id = 'ldr';
+
+        try {
+            $pdo = new PDO('mysql:host=localhost;dbname=id16184140_casa_automatica', $username, $password);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+            $stmt = $pdo->prepare('UPDATE recursos SET recurso = :ldr WHERE id = :id');
+            $stmt->bindValue(":ldr", $ldr);
+            $stmt->bindValue(":id", $id);
+            $stmt->execute();
+        
+            echo $stmt->rowCount();
+        } catch(PDOException $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
+    if (isset($_POST["alarme"])) {
+        $alarme = $_POST["alarme"];
+        $id = 'alarme';
+
+        try {
+            $pdo = new PDO('mysql:host=localhost;dbname=id16184140_casa_automatica', $username, $password);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+            $stmt = $pdo->prepare('UPDATE recursos SET recurso = :alarme WHERE id = :id');
+            $stmt->bindValue(":alarme", $alarme);
             $stmt->bindValue(":id", $id);
             $stmt->execute();
         

@@ -23,10 +23,9 @@ int LDR = A0; // LRD tá conectado aqui
 int input = 0; // recebe o valor lido de LDR
  
 int frequency = 0; // inicia frequência em 0
-int Buzzer = null; // pino do buzzer = ?? - não sabemos a pinagem do buzzer
-int duration, distance; // inicia variáveis de distância e tempo
+int Buzzer = D5; // pino do buzzer = ?? - não sabemos a pinagem do buzzer
 
-int teste_buzzer = D4;
+int piscina = D4;
 
 char json[400] = {0};
 StaticJsonDocument<256> doc;
@@ -35,7 +34,7 @@ void setup() {
   // usando a serial pra testes
   Serial.begin(9600);
   pinMode(LED, OUTPUT);
-  pinMode(teste_buzzer, OUTPUT);
+  pinMode(piscina, OUTPUT);
 
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
@@ -70,48 +69,7 @@ void resultOfGet(String msg){
 }
 
 void loop() {
-  Serial.println("loop iniciado");
-       digitalWrite(trigPin, HIGH);
-       delayMicroseconds(10);
-       digitalWrite(trigPin, LOW);
-       duration = pulseIn(echoPin, HIGH);
-       distance = (duration / 2) / 29.1; // cálculo de conversão
-       
-       if (distance >= 40 || distance <= 0) { // verificando distâncias
-        Serial.println("Ninguém por perto!");
-        digitalWrite(teste_buzzer, LOW); // teste (não sabe-se o pino do buzzer)
-       }
-       
-       else {
-        Serial.println("Tem alguém vindo!");
-        Serial.print("Distância = ");
-        Serial.print(distance); // imprime distância no serial
-
-        digitalWrite(Buzzer, HIGH); // acionando buzzer - caso queira testar o led, colocar o led da piscina no lugar do buzzer
-        
-        for (frequency = 150; frequency < 1800; frequency += 1) { // Tone que produz sirene de polícia
-          tone(Buzzer, frequency, tempo);
-          delay(3);
-        }
-        for (frequency = 1800; frequency > 150; frequency -= 1) { // Tone que produz sirene de polícia
-          tone(Buzzer, frequency, tempo);
-          delay(3);
-        }
-      }
-        
-        
-      input = analogRead(LDR);
-      Serial.println(input);
-      if (input > 900) // quanto maior a leitura, menor é a luminosidade
-      {
-        digitalWrite(LED, HIGH); // Acender o LED
-      }
-      else
-      {
-        digitalWrite(LED, LOW); // Apagar o LED
-        delay(100);
-      }
-      
+  Serial.println("loop iniciado");                 
       if ((WiFiMulti.run() == WL_CONNECTED)){
         std::unique_ptr<BearSSL::WiFiClientSecure>client(new BearSSL::WiFiClientSecure);
         client->setFingerprint(fingerprint);
@@ -121,20 +79,54 @@ void loop() {
         HTTPClient http;
 
         // iniciamos a URL alvo, pega a resposta e finaliza a conexão
-        if (http.begin(*client,"https://fadasprojetotein.000webhostapp.com/")){
+        if (http.begin(*client,"https://fadasprojetotein.000webhostapp.com/values.php")){
           Serial.println("http.begin ok");
         }
         int httpCode = http.GET();
         if (httpCode > 0) { // caso seja maior que 0, tem resposta a ser lida
             String payload = http.getString();
 
-            if (payload == "1") {
-              digitalWrite(teste_buzzer, HIGH);
-              
+            if (payload.indexOf("1")) {
+              digitalWrite(piscina, HIGH);              
             } else {
-              digitalWrite(teste_buzzer, LOW);
-              
+              digitalWrite(piscina, LOW);              
             }
+
+            if (payload.indexOf("3")) {
+              digitalWrite(Buzzer, HIGH);              
+            } else {
+              digitalWrite(Buzzer, LOW);              
+            }
+
+            if (payload.indexOf("5")) {
+              digitalWrite(LED, HIGH);              
+            } else {
+              digitalWrite(LED, LOW);              
+            }
+
+            if (payload.indexOf("7")) {
+              input = analogRead(LDR);
+              Serial.println(input);
+              if (input > 900) // quanto maior a leitura, menor é a luminosidade
+              {
+                digitalWrite(LED, HIGH); // Acender o LED
+              }
+              else
+              {
+                digitalWrite(LED, LOW); // Apagar o LED
+                delay(100);
+              }        
+            } else {
+              digitalWrite(LED, LOW);              
+            }
+
+            if (payload.indexOf("9")) {
+              Serial.println("Tem alguém vindo!");                                          
+              digitalWrite(trigPin, HIGH);              
+            } else {
+              Serial.println("Ninguém por perto!");
+              digitalWrite(trigPin, LOW);              
+            }            
             
             Serial.println(httpCode);
             Serial.println(payload);

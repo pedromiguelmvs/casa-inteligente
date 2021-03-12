@@ -1,0 +1,39 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #191622;
+    display: flex;    
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 100vh;    
+}
+
+.button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    background-color: #E7DE79;
+    font-weight: bold;
+    color: #191622;
+    font-size: 14px;
+    transition: .2s;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+}
+
+.button:hover {
+    transition: .2s;
+    background-color: #d1c96f;
+}
+
+.label {
+    font-weight: bold;
+    color: whitesmoke;
+    font-family: 'Inter', sans-serif;
+}

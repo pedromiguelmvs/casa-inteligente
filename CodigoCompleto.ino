@@ -27,6 +27,8 @@ int Buzzer = D5; // pino do buzzer = ?? - não sabemos a pinagem do buzzer
 
 int piscina = D4;
 
+int duration, distance;
+
 char json[400] = {0};
 StaticJsonDocument<256> doc;
 
@@ -79,64 +81,140 @@ void loop() {
         HTTPClient http;
 
         // iniciamos a URL alvo, pega a resposta e finaliza a conexão
-        if (http.begin(*client,"https://fadasprojetotein.000webhostapp.com/values.php")){
-          Serial.println("http.begin ok");
+        if (http.begin(*client,"https://fadasprojetotein.000webhostapp.com/alarme.php")){
+          Serial.println("http.begin.alarme.ok");
         }
         int httpCode = http.GET();
         if (httpCode > 0) { // caso seja maior que 0, tem resposta a ser lida
-            String payload = http.getString();
+            String payload = http.getString();            
 
-            if (payload.indexOf("1")) {
-              digitalWrite(piscina, HIGH);              
+            if (payload=="1") {
+              digitalWrite(trigPin, HIGH); 
+              delayMicroseconds(10);
+              digitalWrite(trigPin, LOW);
+
+              duration = pulseIn(echoPin, HIGH);
+              distance = (duration / 2) / 29.1;
+              
+              if (distance >= 50 || distance <= 0) {
+                noTone(Buzzer); // tira o tom do Buzzer
+                Serial.println("Alarme ligado: nenhum objeto detectado");
+                digitalWrite(Buzzer, LOW);  // desliga o Buzzer
+              } else {
+                Serial.println("Alarme ligado: objeto detectado \n");
+                Serial.print("Distância = ");
+                Serial.print(distance); // entre 0 e 200
+                tone(Buzzer, 400);      // 400 Hz por 500 ms
+              }
             } else {
-              digitalWrite(piscina, LOW);              
+              Serial.println("Alarme desativado!");
+              digitalWrite(trigPin, LOW);
             }
+                        
+            Serial.println("Status do alarme: " + payload);
+            resultOfGet(payload);
+        } else {
+          Serial.println(httpCode);
+          Serial.println("Falha durante a requisição do Alarme");
+        }
+        
+        http.end();
 
-            if (payload.indexOf("3")) {
-              digitalWrite(Buzzer, HIGH);              
+        if (http.begin(*client,"https://fadasprojetotein.000webhostapp.com/buzzer.php")){
+          Serial.println("http.begin.buzzer.ok");
+        }
+        httpCode = http.GET();
+        if (httpCode > 0) { // caso seja maior que 0, tem resposta a ser lida
+            String payload = http.getString();            
+
+            if (payload=="1") {
+              digitalWrite(Buzzer, HIGH);
             } else {
-              digitalWrite(Buzzer, LOW);              
-            }
+              digitalWrite(Buzzer, LOW);
+            }                                           
+                        
+            Serial.println("Status do buzzer: " + payload);
+            resultOfGet(payload);
+        } else {
+          Serial.println(httpCode);
+          Serial.println("Falha durante a requisição do Buzzer");
+        }
+        
+        http.end();
 
-            if (payload.indexOf("5")) {
-              digitalWrite(LED, HIGH);              
-            } else {
-              digitalWrite(LED, LOW);              
-            }
+        if (http.begin(*client,"https://fadasprojetotein.000webhostapp.com/ldr.php")){
+          Serial.println("http.begin.ldr.ok");
+        }
+        httpCode = http.GET();
+        if (httpCode > 0) { // caso seja maior que 0, tem resposta a ser lida
+            String payload = http.getString();            
 
-            if (payload.indexOf("7")) {
+            if (payload=="1") {
               input = analogRead(LDR);
               Serial.println(input);
-              if (input > 900) // quanto maior a leitura, menor é a luminosidade
-              {
+              if (input > 900) {
                 digitalWrite(LED, HIGH); // Acender o LED
-              }
-              else
-              {
+              } else {
                 digitalWrite(LED, LOW); // Apagar o LED
                 delay(100);
-              }        
+              }
             } else {
-              digitalWrite(LED, LOW);              
+              digitalWrite(LDR, LOW);
             }
-
-            if (payload.indexOf("9")) {
-              Serial.println("Tem alguém vindo!");                                          
-              digitalWrite(trigPin, HIGH);              
-            } else {
-              Serial.println("Ninguém por perto!");
-              digitalWrite(trigPin, LOW);              
-            }            
-            
-            Serial.println(httpCode);
-            Serial.println(payload);
+                        
+            Serial.println("Status do LDR: " + payload);
             resultOfGet(payload);
-        }
-        else {
+        } else {
           Serial.println(httpCode);
-          Serial.println("Falha durante a requisição");
+          Serial.println("Falha durante a requisição do LDR");
         }
-      http.end();
+        
+        http.end();
+
+        if (http.begin(*client,"https://fadasprojetotein.000webhostapp.com/led.php")){
+          Serial.println("http.begin.led.ok");
+        }
+        httpCode = http.GET();
+        if (httpCode > 0) { // caso seja maior que 0, tem resposta a ser lida
+            String payload = http.getString();            
+
+            if (payload=="1") {
+              digitalWrite(LED, HIGH);
+            } else {
+              digitalWrite(LED, LOW);
+            }
+                        
+            Serial.println("Status do LED: " + payload);
+            resultOfGet(payload);
+        } else {
+          Serial.println(httpCode);
+          Serial.println("Falha durante a requisição do LED");
+        }
+        
+        http.end();
+
+        if (http.begin(*client,"https://fadasprojetotein.000webhostapp.com/piscina.php")){
+          Serial.println("http.begin.piscina.ok");
+        }
+        httpCode = http.GET();
+        if (httpCode > 0) { // caso seja maior que 0, tem resposta a ser lida
+            String payload = http.getString();            
+
+            if (payload=="1") {
+              digitalWrite(piscina, HIGH);
+            } else {
+              digitalWrite(piscina, LOW);
+            }
+                        
+            Serial.println("Status da piscina: " + payload);
+            resultOfGet(payload);
+        } else {
+          Serial.println(httpCode);
+          Serial.println("Falha durante a requisição da piscina");
+        }
+        
+        http.end();
+
       }
   delay(5000);
 }

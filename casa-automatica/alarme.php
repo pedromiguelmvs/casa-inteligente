@@ -13,7 +13,7 @@
         while($user = $stmt5->fetch()){
             echo $user['recurso'];
         }
-                
+
     } catch(PDOException $e) {
         echo 'Error: ' . $e->getMessage();
     }

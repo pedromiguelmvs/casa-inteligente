@@ -152,14 +152,14 @@ void loop() {
             if (payload=="1") {
               input = analogRead(LDR);
               Serial.println(input);
-              if (input > 900) {
+              if (input > 500) {
                 digitalWrite(LED, HIGH); // Acender o LED
               } else {
                 digitalWrite(LED, LOW); // Apagar o LED
                 delay(100);
               }
             } else {
-              digitalWrite(LDR, LOW);
+              digitalWrite(LED, LOW);
             }
                         
             Serial.println("Status do LDR: " + payload);
@@ -171,27 +171,27 @@ void loop() {
         
         http.end();
 
-        if (http.begin(*client,"https://fadasprojetotein.000webhostapp.com/led.php")){
-          Serial.println("http.begin.led.ok");
-        }
-        httpCode = http.GET();
-        if (httpCode > 0) { // caso seja maior que 0, tem resposta a ser lida
-            String payload = http.getString();            
+        // if (http.begin(*client,"https://fadasprojetotein.000webhostapp.com/led.php")){
+        //   Serial.println("http.begin.led.ok");
+        // }
+        // httpCode = http.GET();
+        // if (httpCode > 0) { // caso seja maior que 0, tem resposta a ser lida
+        //     String payload = http.getString();            
 
-            if (payload=="1") {
-              digitalWrite(LED, HIGH);
-            } else {
-              digitalWrite(LED, LOW);
-            }
+        //     if (payload=="1") {
+        //       digitalWrite(LED, HIGH);
+        //     } else {
+        //       digitalWrite(LED, LOW);
+        //     }
                         
-            Serial.println("Status do LED: " + payload);
-            resultOfGet(payload);
-        } else {
-          Serial.println(httpCode);
-          Serial.println("Falha durante a requisição do LED");
-        }
+        //     Serial.println("Status do LED: " + payload);
+        //     resultOfGet(payload);
+        // } else {
+        //   Serial.println(httpCode);
+        //   Serial.println("Falha durante a requisição do LED");
+        // }
         
-        http.end();
+        // http.end();
 
         if (http.begin(*client,"https://fadasprojetotein.000webhostapp.com/piscina.php")){
           Serial.println("http.begin.piscina.ok");
